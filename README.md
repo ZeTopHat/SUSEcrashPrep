@@ -1,6 +1,6 @@
 # Crash Prep
 
-This is an RPM download and extraction tool for internal SUSE employees looking to more quickly perform crash analysis on kernel core dumps.
+This is an RPM download and extraction tool for internal SUSE employees looking to more quickly perform crash analysis on enterprise kernel core dumps.
 
 ## Getting Started
 
@@ -15,6 +15,8 @@ sudo pip install wget
 ```
 
 The machine in use needs passwordless access to http://nu.novell.com and access to https://wiki.microfocus.com/index.php/SUSE/SLES/Kernel_versions
+
+Though this tool was used on openSUSE leap it's been built only to handle SUSE Linux Enterprise kernels as provided in the above wiki url.
 
 ### Installing
 
