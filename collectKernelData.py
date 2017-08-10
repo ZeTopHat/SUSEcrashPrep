@@ -5,21 +5,20 @@ import re
 import os
 import sys
 
-# get script path for extraction script
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
-
 url = "https://wiki.microfocus.com/index.php/SUSE/SLES/Kernel_versions"
+kernelLists = {}
 try:
   rawData = urllib.request.urlopen(url).read()
 except:
   print("Something went wrong.. Failed to retrieve " + url)
   quit()
-
 itemsList = re.findall(r"(?:(?:[0-9]+)(?:\.))+(?:(?:[0-9]+)(?:\-)(?:[0-9]+))(?:(?:\.)?(?:[0-9]+)?)+|<th>\sSLES(?:\s)?[0-9]+(?:\sSP[0-5])?(?:\s\-\sLTSS)?", str(rawData))
+
+
 for number,item in enumerate(itemsList):
   itemsList[number] = re.sub("<th>\s", "", item)
 
-kernelLists = {}
 for item in itemsList:
   if "S" in item:
     key = item
