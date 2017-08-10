@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import json
+import re
 import subprocess
 import shutil
 import argparse
@@ -35,6 +36,9 @@ if os.path.exists("%s/kernel_versions.json" % scriptPath):
 else:
   import collectKernelData
 
+if '-default' in args.kernelVersion[0]:
+  print('Converting "-default" to ".1" to match full kernel versions. If true kernel version uses .2, .3, etc the kernel may not be found.')
+  args.kernelVersion[0] = re.sub("-default", ".1", args.kernelVersion[0])
 
 def urlAssemble(packageType, fileName):
   if packageType == "info" or packageType == "source":
