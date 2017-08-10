@@ -2,6 +2,11 @@
 import urllib.request
 import json
 import re
+import os
+import sys
+
+# get script path for extraction script
+scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 url = "https://wiki.microfocus.com/index.php/SUSE/SLES/Kernel_versions"
 try:
@@ -26,7 +31,7 @@ for item in itemsList:
       print("Something went wrong.. Is " + url +  " displaying properly?")
       quit()
 
-with open('kernel_versions.json', 'w') as document:
+with open('%s/kernel_versions.json' % scriptPath, 'w') as document:
   try:
     document.write(json.dumps(kernelLists))
   except:

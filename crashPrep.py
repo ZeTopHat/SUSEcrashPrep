@@ -5,14 +5,17 @@ except:
   print("Something went wrong.. Is the wget python module installed? Try 'pip install wget'")
   quit()
 import os
+import sys
 import time
 import json
 import argparse
 
+# get script path for extraction script
+scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
 # create the kernel_versions.json file if it doesn't exist or it is a day old or older
 currentTime = time.time()
-if os.path.exists("kernel_versions.json"):
-  lastModifiedTime = os.path.getmtime("kernel_versions.json")
+if os.path.exists("%s/kernel_versions.json" % scriptPath):
+  lastModifiedTime = os.path.getmtime("%s/kernel_versions.json" % scriptPath)
   if (currentTime - lastModifiedTime) // (24 * 3600) >= 1:
     import collectKernelData
 else:
@@ -23,6 +26,7 @@ parser = argparse.ArgumentParser(description='Download files for core analysis.'
 parser.add_argument('kernelVersion', nargs=1, metavar='kernel', help='Kernel version to use.')
 parser.add_argument('-a', '--arch', nargs=1, metavar='architecture', help='Architecture to use. (defaults to x86_64)', default=['x86_64'], dest='architecture')
 parser.add_argument('-b', '--base', help='If included, will also download the kernel-default-base', action='store_true')
+parser.add_argument('-e', '--extraction', help='If included, will also extract the downloaded rpm files.', action='store_true')
 args = parser.parse_args()
 
 try:
@@ -34,7 +38,7 @@ print("Registered the -a argument as: " + args.architecture[0])
 
 # load json data and compare to kernel in order to get osVersion
 kernelLists = {}
-with open('kernel_versions.json', 'r') as document:
+with open('%s/kernel_versions.json' % scriptPath, 'r') as document:
   kernelLists = json.load(document)
 
 osVersion = ''
@@ -117,6 +121,7 @@ else:
   quit()
 
 
+
 # loop through the info and source packages to download
 for packageType in ["info", "source"]:
   debugFilename = "kernel-default-debug%s-%s.%s.rpm" % (packageType, args.kernelVersion[0], args.architecture[0])
@@ -143,6 +148,23 @@ for packageType in ["info", "source"]:
         print("\n" + debugFilename + " successfully downloaded.")
       except:
         print("Failed to download. Is this URL accessible?: " + url)
+
+      if args.extraction:
+        import subprocess
+        import shutil
+        print("extracting %s for crash analysis.." % debugFilename)
+        #try:
+        if packageType == "info":
+          subprocess.call([scriptPath + "/rpmExtraction.sh", debugFilename, "./usr/lib/debug/boot/*"])
+          shutil.rmtree("./usr")
+          print("%s rpm extracted." % debugFilename)
+        elif packageType == "source":
+          subprocess.call([scriptPath + "/rpmExtraction.sh", debugFilename, "./usr/*"])
+          shutil.rmtree("./usr")
+          print("%s rpm extracted." % debugFilename)
+            
+        #except:
+        #  print("Couldn't execute rpmExtraction.sh file.")
 
 
 if args.base:
@@ -171,4 +193,16 @@ if args.base:
       print("\n" + baseFilename + " successfully downloaded.")
     except:
       print("Failed to download. Is this URL accessible?: " + url)
+
+    if args.extraction:
+      import subprocess
+      import shutil
+      print("extracting base rpm file for crash analysis..")
+      try:
+        subprocess.call([scriptPath + "/rpmExtraction.sh", baseFilename, "./boot/*"])
+        shutil.rmtree("./boot")
+        print("rpm extracted.")
+      except:
+        print("Couldn't execute rpmExtraction.sh file.")
+
 
