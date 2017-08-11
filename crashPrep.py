@@ -28,6 +28,7 @@ kernelLists = {}
 osVersion = ''
 poolKernel = False
 era = "Updates"
+canDownload = False
 
 if os.path.exists("{0}/kernel_versions.json".format(scriptPath)):
   lastModifiedTime = os.path.getmtime("{0}/kernel_versions.json".format(scriptPath))
@@ -72,11 +73,14 @@ def urlAssemble(packageType, fileName):
 
 def rpmDownload(url):
   print(url)
+  global canDownload 
   try:
     fileName = wget.download(url)
     print("\n" + fileName + " successfully downloaded.")
+    canDownload = True
   except:
     print("Failed to download. Is this URL accessible?: " + url)
+    canDownload = False
 
 def rpmExtraction(packageType, fileName):
   print("extracting {0} for crash analysis..".format(fileName))
@@ -141,9 +145,13 @@ if '10' in osVersion:
   if 'SP1' in osVersion:
     osRepo1='SLE10-SP1'
     osRepo3='SLES10-SP1'
+    if poolKernel:
+      print("Download will likely fail. nu.novell.com doesn't have a pool repository for " + osVersion)
   elif 'SP2' in osVersion:
     osRepo1='SLE10-SP2'
     osRepo3='SLES10-SP2'
+    if poolKernel:
+      print("Download will likely fail. nu.novell.com doesn't have a pool repository for " + osVersion)
   elif 'SP3' in osVersion:
     osRepo1='SLE10-SP3'
     osRepo3='SLES10-SP3'
@@ -153,6 +161,8 @@ if '10' in osVersion:
   else:
     osRepo1='SLE10'
     osRepo3='SLES10'
+    if poolKernel:
+      print("Download will likely fail. nu.novell.com doesn't have a pool repository for " + osVersion)
 elif '11' in osVersion:
   osRepo2='sle-11'
   if 'SP1' in osVersion:
@@ -199,7 +209,7 @@ for packageType in ["info", "source"]:
     else:
       rpmDownload(url)
 
-      if args.extraction:
+      if args.extraction and canDownload:
         rpmExtraction(packageType, debugFilename)
 
 if args.base:
@@ -213,7 +223,7 @@ if args.base:
     url = urlAssemble("base", baseFilename)
     rpmDownload(url)
 
-    if args.extraction:
+    if args.extraction and canDownload:
       rpmExtraction("base", baseFilename)
 
 
