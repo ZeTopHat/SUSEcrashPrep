@@ -43,7 +43,7 @@ if '-default' in args.kernelVersion[0]:
 def urlAssemble(packageType, fileName):
   if packageType == "info" or packageType == "source":
     # urls are significantly different depending on 11 or 12
-    if '10' or '11' in osVersion:
+    if osVersion in ('10', '11'):
       url = 'https://nu.novell.com/repo/$RCE/%s-Debuginfo-%s/%s-%s/rpm/%s/%s' % (osRepo1, era, osRepo2, args.architecture[0], args.architecture[0], fileName)
     elif '12' in osVersion:
       url = 'http://nu.novell.com/SUSE/%s/SLE-SERVER/%s/%s/%s_debug/%s/%s' % (era, osRepo1, args.architecture[0], era.lower()[:-1], args.architecture[0], fileName)
@@ -54,7 +54,7 @@ def urlAssemble(packageType, fileName):
       quit()
   elif packageType == "base":
     # once again, major version have very different url paths
-    if '10' or '11' in osVersion:
+    if osVersion in ('10', '11'):
       url = 'http://nu.novell.com/repo/$RCE/%s-%s/%s-%s/rpm/%s/%s' % (osRepo3, era, osRepo2, args.architecture[0], args.architecture[0], fileName)
       if 'LTSS' in osVersion:
         url = 'http://nu.novell.com/repo/$RCE/%s-%s/%s-%s/rpm/%s/%s' % (osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], args.architecture[0], fileName)
@@ -124,7 +124,7 @@ if kernelLists.get(osVersion)[0] == args.kernelVersion[0]:
     poolKernel = True
 
 if poolKernel:
-  if '10' or '11' in osVersion:
+  if osVersion in ('10', '11'):
     era = "Pool"
   elif '12' in osVersion:
     era = "Products"
