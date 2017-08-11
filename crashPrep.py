@@ -29,8 +29,8 @@ osVersion = ''
 poolKernel = False
 era = "Updates"
 
-if os.path.exists("%s/kernel_versions.json" % scriptPath):
-  lastModifiedTime = os.path.getmtime("%s/kernel_versions.json" % scriptPath)
+if os.path.exists("{0}/kernel_versions.json".format(scriptPath)):
+  lastModifiedTime = os.path.getmtime("{0}/kernel_versions.json".format(scriptPath))
   if (currentTime - lastModifiedTime) // (24 * 3600) >= 1:
     import collectKernelData
 else:
@@ -43,25 +43,25 @@ if '-default' in args.kernelVersion[0]:
 def urlAssemble(packageType, fileName):
   if packageType == "info" or packageType == "source":
     # urls are significantly different depending on 11 or 12
-    if osVersion in ('10', '11'):
-      url = 'https://nu.novell.com/repo/$RCE/%s-Debuginfo-%s/%s-%s/rpm/%s/%s' % (osRepo1, era, osRepo2, args.architecture[0], args.architecture[0], fileName)
+    if '10' in osVersion or '11' in osVersion:
+      url = 'https://nu.novell.com/repo/$RCE/{0}-Debuginfo-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo1, era, osRepo2, args.architecture[0], fileName)
     elif '12' in osVersion:
-      url = 'http://nu.novell.com/SUSE/%s/SLE-SERVER/%s/%s/%s_debug/%s/%s' % (era, osRepo1, args.architecture[0], era.lower()[:-1], args.architecture[0], fileName)
+      url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}/{2}/{3}_debug/{2}/{4}'.format(era, osRepo1, args.architecture[0], era.lower()[:-1], fileName)
       if 'LTSS' in osVersion:
-        url = 'http://nu.novell.com/SUSE/%s/SLE-SERVER/%s%s/%s/%s_debug/%s/%s' % (era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], args.architecture[0], fileName)
+        url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}{2}/{3}/{4}_debug/{3}/{5}'.format(era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], fileName)
     else:
       print("This version is not known: " + osVersion)
       quit()
   elif packageType == "base":
     # once again, major version have very different url paths
-    if osVersion in ('10', '11'):
-      url = 'http://nu.novell.com/repo/$RCE/%s-%s/%s-%s/rpm/%s/%s' % (osRepo3, era, osRepo2, args.architecture[0], args.architecture[0], fileName)
+    if '10' in osVersion or '11' in osVersion:
+      url = 'http://nu.novell.com/repo/$RCE/{0}-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo3, era, osRepo2, args.architecture[0], fileName)
       if 'LTSS' in osVersion:
-        url = 'http://nu.novell.com/repo/$RCE/%s-%s/%s-%s/rpm/%s/%s' % (osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], args.architecture[0], fileName)
+        url = 'http://nu.novell.com/repo/$RCE/{0}-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], fileName)
     elif '12' in osVersion:
-      url = 'http://nu.novell.com/SUSE/%s/SLE-SERVER/%s/%s/%s/%s/%s' % (era, osRepo1, args.architecture[0], era.lower()[:-1], args.architecture[0], fileName)
+      url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}/{2}/{3}/{2}/{4}'.format(era, osRepo1, args.architecture[0], era.lower()[:-1], fileName)
       if 'LTSS' in osVersion:
-        url = 'http://nu.novell.com/SUSE/%s/SLE-SERVER/%s%s/%s/%s/%s/%s' % (era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], args.architecture[0], fileName)
+        url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}{2}/{3}/{4}/{3}/{5}'.format(era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], fileName)
     else:
       print("This version is not known: " + osVersion)
       quit()
@@ -79,7 +79,7 @@ def rpmDownload(url):
     print("Failed to download. Is this URL accessible?: " + url)
 
 def rpmExtraction(packageType, fileName):
-  print("extracting %s for crash analysis.." % fileName)
+  print("extracting {0} for crash analysis..".format(fileName))
   try:
     if packageType == "info":
       subprocess.call([scriptPath + "/rpmExtraction.sh", fileName, "./usr/lib/debug/boot/*"])
@@ -93,7 +93,7 @@ def rpmExtraction(packageType, fileName):
     else:
       print("packageType not recognized. exiting..")
       quit()
-    print("%s rpm extracted." % fileName)         
+    print("{0} rpm extracted.".format(fileName))         
   except:
     print("Couldn't execute rpmExtraction.sh file.")
 
@@ -105,7 +105,7 @@ except:
 
 print("Registered the architecture as: " + args.architecture[0])
 
-with open('%s/kernel_versions.json' % scriptPath, 'r') as document:
+with open('{0}/kernel_versions.json'.format(scriptPath), 'r') as document:
   kernelLists = json.load(document)
 
 for name, kList in kernelLists.items():
@@ -124,7 +124,7 @@ if kernelLists.get(osVersion)[0] == args.kernelVersion[0]:
     poolKernel = True
 
 if poolKernel:
-  if osVersion in ('10', '11'):
+  if '10' in osVersion or '11' in osVersion:
     era = "Pool"
   elif '12' in osVersion:
     era = "Products"
@@ -188,7 +188,7 @@ else:
 
 # loop through the info and source packages to download
 for packageType in ["info", "source"]:
-  debugFilename = "kernel-default-debug%s-%s.%s.rpm" % (packageType, args.kernelVersion[0], args.architecture[0])
+  debugFilename = "kernel-default-debug{0}-{1}.{2}.rpm".format(packageType, args.kernelVersion[0], args.architecture[0])
   if os.path.exists(debugFilename):
     print(debugFilename + " already exists.")
   else:
@@ -204,9 +204,9 @@ for packageType in ["info", "source"]:
 
 if args.base:
   if '10' in osVersion:
-    baseFilename = "kernel-default-%s.%s.rpm" % (args.kernelVersion[0], args.architecture[0])
+    baseFilename = "kernel-default-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0])
   else:
-    baseFilename = "kernel-default-base-%s.%s.rpm" % (args.kernelVersion[0], args.architecture[0])
+    baseFilename = "kernel-default-base-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0])
   if os.path.exists(baseFilename):
     print(baseFilename + " already exists.")
   else:
