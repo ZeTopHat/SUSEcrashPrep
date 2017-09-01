@@ -32,7 +32,7 @@ After that you just have to execute the crashPrep.py file. The other files are s
 
 ```
 user@host:~> ./crashPrep.py -h
-usage: crashPrep.py [-h] [-a architecture] [-b] [-e] kernel
+usage: crashPrep.py [-h] [-a architecture] [-b] [-e] [-f flavor] kernel
 
 Download files for core analysis.
 
@@ -47,6 +47,8 @@ optional arguments:
                         base
   -e, --extraction      If included, will also extract the downloaded rpm
                         files.
+  -f flavor, --flavor flavor
+                        Flavor to use. (defaults to default)
 user@host:~> 
 
 ```
