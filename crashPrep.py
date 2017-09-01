@@ -14,6 +14,7 @@ parser.add_argument('kernelVersion', nargs=1, metavar='kernel', help='Kernel ver
 parser.add_argument('-a', '--arch', nargs=1, metavar='architecture', help='Architecture to use. (defaults to x86_64)', default=['x86_64'], dest='architecture')
 parser.add_argument('-b', '--base', help='If included, will also download the kernel-default-base', action='store_true')
 parser.add_argument('-e', '--extraction', help='If included, will also extract the downloaded rpm files.', action='store_true')
+parser.add_argument('-f', '--flavor', nargs=1, metavar='flavor', help='Flavor to use. (defaults to default)', default=['default'], dest='flavor')
 args = parser.parse_args()
 
 try:
@@ -107,6 +108,7 @@ try:
 except:
   print("Did you provide a kernel?")
 
+print("Registered the flavor as: " + args.flavor[0])
 print("Registered the architecture as: " + args.architecture[0])
 
 with open('{0}/kernel_versions.json'.format(scriptPath), 'r') as document:
@@ -198,7 +200,7 @@ else:
 
 # loop through the info and source packages to download
 for packageType in ["info", "source"]:
-  debugFilename = "kernel-default-debug{0}-{1}.{2}.rpm".format(packageType, args.kernelVersion[0], args.architecture[0])
+  debugFilename = "kernel-{3}-debug{0}-{1}.{2}.rpm".format(packageType, args.kernelVersion[0], args.architecture[0], args.flavor[0])
   if os.path.exists(debugFilename):
     print(debugFilename + " already exists.")
   else:
@@ -214,9 +216,9 @@ for packageType in ["info", "source"]:
 
 if args.base:
   if '10' in osVersion:
-    baseFilename = "kernel-default-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0])
+    baseFilename = "kernel-{2}-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0], args.flavor[0])
   else:
-    baseFilename = "kernel-default-base-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0])
+    baseFilename = "kernel-{2}-base-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0], args.flavor[0])
   if os.path.exists(baseFilename):
     print(baseFilename + " already exists.")
   else:
