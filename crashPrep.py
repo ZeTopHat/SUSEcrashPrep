@@ -87,7 +87,7 @@ def rpmExtraction(packageType, fileName):
   print("extracting {0} for crash analysis..".format(fileName))
   try:
     if packageType == "info":
-      subprocess.call([scriptPath + "/rpmExtraction.sh", fileName, "./usr/lib/debug/boot/*"])
+      subprocess.call([scriptPath + "/rpmExtraction.sh", fileName, "./usr/*"])
       shutil.rmtree("./usr")
     elif packageType == "source":
       subprocess.call([scriptPath + "/rpmExtraction.sh", fileName, "./usr/*"])
