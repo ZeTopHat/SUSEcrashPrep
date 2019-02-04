@@ -23,6 +23,9 @@ except:
   print("Something went wrong.. Is the wget python module installed? Try 'sudo pip install wget'.")
   quit()
 
+# vars to later make accessible via conf file
+smtserver = "smt.lab.novell.com"
+
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
 currentTime = time.time()
 kernelLists = {}
@@ -46,24 +49,24 @@ def urlAssemble(packageType, fileName):
   if packageType == "info" or packageType == "source":
     # urls are significantly different depending on 11 or 12
     if '10' in osVersion or '11' in osVersion:
-      url = 'https://nu.novell.com/repo/$RCE/{0}-Debuginfo-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo1, era, osRepo2, args.architecture[0], fileName)
-    elif '12' in osVersion:
-      url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}/{2}/{3}_debug/{2}/{4}'.format(era, osRepo1, args.architecture[0], era.lower()[:-1], fileName)
+      url = 'http://{5}/repo/$RCE/{0}-Debuginfo-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo1, era, osRepo2, args.architecture[0], fileName, smtserver)
+    elif '12' in osVersion or '15' in osVersion:
+      url = 'http://{5}/SUSE/{0}/{6}/{1}/{2}/{3}_debug/{2}/{4}'.format(era, osRepo1, args.architecture[0], era.lower()[:-1], fileName, smtserver, osRepo2)
       if 'LTSS' in osVersion:
-        url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}{2}/{3}/{4}_debug/{3}/{5}'.format(era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], fileName)
+        url = 'http://{6}/SUSE/{0}/{7}/{1}{2}/{3}/{4}_debug/{3}/{5}'.format(era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], fileName, smtserver, osRepo2)
     else:
       print("This version is not known: " + osVersion)
       quit()
   elif packageType == "base":
     # once again, major version have very different url paths
     if '10' in osVersion or '11' in osVersion:
-      url = 'http://nu.novell.com/repo/$RCE/{0}-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo3, era, osRepo2, args.architecture[0], fileName)
+      url = 'http://{5}/repo/$RCE/{0}-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo3, era, osRepo2, args.architecture[0], fileName, smtserver)
       if 'LTSS' in osVersion:
-        url = 'http://nu.novell.com/repo/$RCE/{0}-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], fileName)
-    elif '12' in osVersion:
-      url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}/{2}/{3}/{2}/{4}'.format(era, osRepo1, args.architecture[0], era.lower()[:-1], fileName)
+        url = 'http://{5}/repo/$RCE/{0}-{1}/{2}-{3}/rpm/{3}/{4}'.format(osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], fileName, smtserver)
+    elif '12' in osVersion or '15' in osVersion:
+      url = 'http://{5}/SUSE/{0}/{6}/{1}/{2}/{3}/{2}/{4}'.format(era, osRepo1, args.architecture[0], era.lower()[:-1], fileName, smtserver, osRepo2)
       if 'LTSS' in osVersion:
-        url = 'http://nu.novell.com/SUSE/{0}/SLE-SERVER/{1}{2}/{3}/{4}/{3}/{5}'.format(era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], fileName)
+        url = 'http://{6}/SUSE/{0}/{7}/{1}{2}/{3}/{4}/{3}/{5}'.format(era, osRepo1, "-LTSS", args.architecture[0], era.lower()[:-1], fileName, smtserver, osRepo2)
     else:
       print("This version is not known: " + osVersion)
       quit()
@@ -132,7 +135,7 @@ if kernelLists.get(osVersion)[0] == args.kernelVersion[0]:
 if poolKernel:
   if '10' in osVersion or '11' in osVersion:
     era = "Pool"
-  elif '12' in osVersion:
+  elif '12' in osVersion or '15' in osVersion:
     era = "Products"
   else:
     print("I don't recognize this OS version: " + osVersion)
@@ -183,6 +186,7 @@ elif '11' in osVersion:
     osRepo1='SLE11'
     osRepo3='SLES11'
 elif '12' in osVersion:
+  osRepo2='SLE-SERVER'
   if 'SP1' in osVersion:
     osRepo1='12-SP1'
   elif 'SP2' in osVersion:
@@ -193,6 +197,14 @@ elif '12' in osVersion:
     osRepo1='12-SP4'
   else:
     osRepo1='12'
+elif '15' in osVersion:
+  osRepo2='SLE-Module-Basesystem'
+  if 'SP1' in osVersion:
+    osRepo1='15-SP1'
+  elif 'SP2' in osVersion:
+    osRepo1='15-SP2'
+  else:
+    osRepo1='15'
 else:
   print("This version is not known: " + osVersion)
   quit()
@@ -217,8 +229,11 @@ for packageType in ["info", "source"]:
 if args.base:
   if '10' in osVersion:
     baseFilename = "kernel-{2}-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0], args.flavor[0])
-  else:
+  elif '11' in osVersion:
     baseFilename = "kernel-{2}-base-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0], args.flavor[0])
+  else:
+    baseFilename = "kernel-{2}-{0}.{1}.rpm".format(args.kernelVersion[0], args.architecture[0], args.flavor[0])
+
   if os.path.exists(baseFilename):
     print(baseFilename + " already exists.")
   else:
