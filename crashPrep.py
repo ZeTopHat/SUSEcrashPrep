@@ -29,6 +29,7 @@ smtserver = "smt.lab.novell.com"
 
 # starting vars
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
+jsonPath = '/tmp'
 currentTime = time.time()
 kernelLists = {}
 osVersion = ''
@@ -37,8 +38,8 @@ era = "Updates"
 canDownload = False
 
 # create a new kernel_versions.json file if it doesn't exist or is older than a day old
-if os.path.exists("{0}/kernel_versions.json".format(scriptPath)):
-  lastModifiedTime = os.path.getmtime("{0}/kernel_versions.json".format(scriptPath))
+if os.path.exists("{0}/kernel_versions.json".format(jsonPath)):
+  lastModifiedTime = os.path.getmtime("{0}/kernel_versions.json".format(jsonPath))
   if (currentTime - lastModifiedTime) // (24 * 3600) >= 1:
     import collectKernelData
 else:
@@ -119,7 +120,7 @@ print("Registered the flavor as: " + args.flavor[0])
 print("Registered the architecture as: " + args.architecture[0])
 
 # load json file
-with open('{0}/kernel_versions.json'.format(scriptPath), 'r') as document:
+with open('{0}/kernel_versions.json'.format(jsonPath), 'r') as document:
   kernelLists = json.load(document)
 
 # Match kernel to json and snag OS version

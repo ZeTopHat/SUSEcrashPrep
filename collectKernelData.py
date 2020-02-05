@@ -6,6 +6,7 @@ import os
 import sys
 
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
+jsonPath = '/tmp/'
 url = "https://wiki.microfocus.com/index.php/SUSE/SLES/Kernel_versions"
 kernelLists = {}
 try:
@@ -30,7 +31,7 @@ for item in itemsList:
       print("Something went wrong.. Is " + url +  " displaying properly?")
       quit()
 
-with open('%s/kernel_versions.json' % scriptPath, 'w') as document:
+with open('%s/kernel_versions.json' % jsonPath, 'w') as document:
   try:
     document.write(json.dumps(kernelLists))
   except:
