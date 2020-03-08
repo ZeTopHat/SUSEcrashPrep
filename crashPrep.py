@@ -25,7 +25,7 @@ except:
   quit()
 
 # vars to later make accessible via conf file
-smtserver = "smt.lab.novell.com"
+smtserver = "faux.ps/repo/smt"
 
 # starting vars
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
