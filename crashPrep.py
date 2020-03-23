@@ -54,7 +54,7 @@ if '-default' in args.kernelVersion[0]:
 def urlAssemble(packageType, fileName):
   if packageType == "info" or packageType == "source":
     if '10' in osVersion or '11' in osVersion:
-      url = 'http://{0}/repo/$RCE/{1}-Debuginfo-{2}/{3}-{4}/rpm/{4}/{5}'.format(smtserver, osRepo1, era, osRepo2, args.architecture[0], fileName)
+      url = 'http://{0}/$RCE/{1}-Debuginfo-{2}/{3}-{4}/rpm/{4}/{5}'.format(smtserver, osRepo1, era, osRepo2, args.architecture[0], fileName)
     elif '12' in osVersion or '15' in osVersion:
       url = 'http://{0}/SUSE/{1}/{2}/{3}/{4}/{5}_debug/{4}/{6}'.format(smtserver, era, osRepo2, osRepo1, args.architecture[0], era.lower()[:-1], fileName)
       if 'LTSS' in osVersion:
@@ -64,9 +64,9 @@ def urlAssemble(packageType, fileName):
       quit()
   elif packageType == "base":
     if '10' in osVersion or '11' in osVersion:
-      url = 'http://{0}/repo/$RCE/{1}-{2}/{3}-{4}/rpm/{4}/{5}'.format(smtserver, osRepo3, era, osRepo2, args.architecture[0], fileName)
+      url = 'http://{0}/$RCE/{1}-{2}/{3}-{4}/rpm/{4}/{5}'.format(smtserver, osRepo3, era, osRepo2, args.architecture[0], fileName)
       if 'LTSS' in osVersion:
-        url = 'http://{0}/repo/$RCE/{1}-{2}/{3}-{4}/rpm/{4}/{5}'.format(smtserver, osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], fileName, smtserver)
+        url = 'http://{0}/$RCE/{1}-{2}/{3}-{4}/rpm/{4}/{5}'.format(smtserver, osRepo3, "LTSS-Updates", osRepo2, args.architecture[0], fileName, smtserver)
     elif '12' in osVersion or '15' in osVersion:
       url = 'http://{0}/SUSE/{1}/{2}/{3}/{4}/{5}/{4}/{6}'.format(smtserver, era, osRepo2, osRepo1, args.architecture[0], era.lower()[:-1], fileName)
       if 'LTSS' in osVersion:

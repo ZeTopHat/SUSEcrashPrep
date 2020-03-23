@@ -7,18 +7,18 @@ import sys
 
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
 jsonPath = '/tmp/'
-url = "https://wiki.microfocus.com/index.php/SUSE/SLES/Kernel_versions"
+url = "https://www.suse.com/support/kb/doc/?id=000019587"
 kernelLists = {}
 try:
   rawData = urllib.request.urlopen(url).read()
 except:
   print("Something went wrong.. Failed to retrieve " + url)
   quit()
-itemsList = re.findall(r"(?:(?:[0-9]+)(?:\.))+(?:(?:[0-9]+)(?:\-)(?:[0-9]+))(?:(?:\.)?(?:[0-9]+)?)+|<th>\sSLE[S]?(?:\s)?[0-9]+(?:\sSP[0-5])?(?:\s\-\sLTSS)?", str(rawData))
+itemsList = re.findall(r"(?:(?:[0-9]+)(?:\.))+(?:(?:[0-9]+)(?:\-)(?:[0-9]+))(?:(?:\.)?(?:[0-9]+)?)+|>SLE[S]?(?:\s)?[0-9]+(?:\sSP[0-5])?(?:\s\-\sLTSS)?", str(rawData))
 
 
 for number,item in enumerate(itemsList):
-  itemsList[number] = re.sub("<th>\s", "", item)
+  itemsList[number] = re.sub(">", "", item)
 
 for item in itemsList:
   if "S" in item:
