@@ -173,9 +173,12 @@ elif '12' in osVersion:
   version = '12'
   novellstyle = False
 elif '15' in osVersion:
-  osRepo2 = 'SLE-Module-Basesystem'
   version = '15'
   novellstyle = False
+  if 'LTSS' in osVersion: 
+    osRepo2 = 'SLE-Product-SLES'
+  else:
+    osRepo2 = 'SLE-Module-Basesystem'
 else:
   print("This version is not known: " + osVersion)
   quit()
