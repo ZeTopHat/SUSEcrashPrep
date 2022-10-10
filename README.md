@@ -14,7 +14,7 @@ This tool has only been tested on openSUSE Leap 42.1 and 42.2. It relies on pyth
 sudo pip install wget
 ```
 
-The machine in use needs passwordless access to http://faux.ps/repo/smt and access to https://www.suse.com/support/kb/doc/?id=000019587
+The machine in use needs passwordless access to http://collective.suse.cloud/repo/smt and access to https://www.suse.com/support/kb/doc/?id=000019587
 
 Though this tool was used on openSUSE leap it's been built only to handle SUSE Linux Enterprise kernels as provided in the above wiki url.
 
