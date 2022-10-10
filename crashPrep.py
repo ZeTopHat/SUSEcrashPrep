@@ -25,7 +25,7 @@ except:
   quit()
 
 # vars to later make accessible via conf file
-smtserver = "faux.ps/repo/smt"
+smtserver = "collective.suse.cloud/repo/smt"
 
 # starting vars
 scriptPath = os.path.dirname(os.path.realpath(sys.argv[0]))
