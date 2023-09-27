@@ -14,7 +14,7 @@ try:
 except:
   print("Something went wrong.. Failed to retrieve " + url)
   quit()
-itemsList = re.findall(r"(?:(?:[0-9]+)(?:\.))+(?:(?:[0-9]+)(?:\-)(?:[0-9]+))(?:(?:\.)?(?:[0-9]+)?)+|>SLE[S]?(?:\s)?[0-9]+(?:\sSP[0-5])?(?:\s\-\sLTSS)?", str(rawData))
+itemsList = re.findall(r"(?:(?:[0-9]+)(?:\.))+(?:(?:[0-9]+)(?:\-)(?:[0-9]+))(?:(?:\.)?(?:[0-9]+)?)+|>SLE[S]?(?:\s)?[0-9]+(?:\sSP[0-9])?(?:\s\-\sLTSS)?(?:[a-zA-Z0-9\-]+)?", str(rawData))
 
 
 for number,item in enumerate(itemsList):
