@@ -142,7 +142,15 @@ def rpmExtraction(packageType, fileName):
 
     try:
         # Determine the extraction pattern
-        pattern = "./boot/*" if packageType == "base" else "./usr/*"
+        if '16' in osVersion:
+            if packageType == "base":
+                pattern = "./usr/lib/modules/*/vmlinux.xz"
+            elif packageType == "info":
+                pattern = "./usr/lib/debug/usr/lib/modules/*"
+            else:
+                pattern = "./usr/*"
+        else:
+            pattern = "./boot/*" if packageType == "base" else "./usr/*"
 
         abs_script_path = os.path.abspath(f"{scriptPath}/rpmExtraction.sh")
 
